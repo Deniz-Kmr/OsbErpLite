@@ -41,6 +41,14 @@ public class ExceptionHandlingMiddleware
                 HttpStatusCode.BadRequest,
                 string.Join(" | ", validationEx.Errors.Select(e => e.ErrorMessage))
             ),
+            InvalidOperationException => (
+                HttpStatusCode.BadRequest,
+                exception.Message
+            ),
+            UnauthorizedAccessException => (
+                HttpStatusCode.Forbidden,
+                exception.Message
+            ),
             KeyNotFoundException => (
                 HttpStatusCode.NotFound,
                 exception.Message

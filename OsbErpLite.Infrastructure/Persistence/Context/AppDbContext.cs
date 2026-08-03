@@ -20,6 +20,7 @@ public class AppDbContext : DbContext
     public DbSet<Department> Departments => Set<Department>();
     public DbSet<Position> Positions => Set<Position>();
     public DbSet<LeaveRequest> LeaveRequests => Set<LeaveRequest>();
+    public DbSet<User> Users => Set<User>();
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
