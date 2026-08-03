@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OsbErpLite.Api.Common;
 using OsbErpLite.Application.BusinessPartners.Commands;
@@ -10,6 +11,7 @@ namespace OsbErpLite.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class BusinessPartnersController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -20,6 +22,7 @@ public class BusinessPartnersController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<BusinessPartnerDto>), StatusCodes.Status201Created)]
     public async Task<IActionResult> Create([FromBody] CreateBusinessPartnerCommand command)
     {
@@ -28,6 +31,7 @@ public class BusinessPartnersController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<BusinessPartnerDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateBusinessPartnerDto dto)
     {
@@ -37,6 +41,7 @@ public class BusinessPartnersController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Delete(Guid id)
     {
