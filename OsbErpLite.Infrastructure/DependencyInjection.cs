@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OsbErpLite.Application.Common.Interfaces;
+using OsbErpLite.Infrastructure.Identity;
 using OsbErpLite.Infrastructure.Persistence.Context;
 using OsbErpLite.Infrastructure.Persistence.Repositories;
 
@@ -8,12 +10,20 @@ namespace OsbErpLite.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, string connectionString)
+    public static IServiceCollection AddInfrastructureServices(
+        this IServiceCollection services,
+        string connectionString,
+        IConfiguration configuration,
+        string jwtSecretKey)
     {
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(connectionString));
 
         services.AddScoped<IBusinessPartnerRepository, BusinessPartnerRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+
+        services.AddSingleton<IJwtTokenService>(
+            new JwtTokenService(configuration, jwtSecretKey));
 
         return services;
     }
