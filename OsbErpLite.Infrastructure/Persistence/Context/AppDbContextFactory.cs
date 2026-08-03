@@ -8,7 +8,9 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     public AppDbContext CreateDbContext(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-        optionsBuilder.UseNpgsql("Host=localhost;Database=osberplite_design;");
+        var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING")
+            ?? "Host=localhost;Port=5433;Database=osberplite_design;";
+        optionsBuilder.UseNpgsql(connectionString);
 
         return new AppDbContext(optionsBuilder.Options);
     }
