@@ -13,9 +13,12 @@ builder.Host.UseSerilog((context, configuration) =>
 var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING")
     ?? throw new InvalidOperationException("CONNECTION_STRING environment variable is not set.");
 
+var jwtSecretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY")
+    ?? throw new InvalidOperationException("JWT_SECRET_KEY environment variable is not set.");
+
 // DI
 builder.Services.AddApplicationServices();
-builder.Services.AddInfrastructureServices(connectionString);
+builder.Services.AddInfrastructureServices(connectionString, builder.Configuration, jwtSecretKey);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
