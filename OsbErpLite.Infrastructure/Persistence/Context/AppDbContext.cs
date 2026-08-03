@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using OsbErpLite.Domain.Common;
 using OsbErpLite.Domain.Entities;
 
 namespace OsbErpLite.Infrastructure.Persistence.Context;
@@ -19,6 +20,26 @@ public class AppDbContext : DbContext
     public DbSet<Department> Departments => Set<Department>();
     public DbSet<Position> Positions => Set<Position>();
     public DbSet<LeaveRequest> LeaveRequests => Set<LeaveRequest>();
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
+        {
+            if (entry.State == EntityState.Added)
+            {
+                if (entry.Entity.Id == Guid.Empty)
+                    entry.Entity.Id = Guid.NewGuid();
+
+                entry.Entity.CreatedDate = DateTime.UtcNow;
+            }
+            else if (entry.State == EntityState.Modified)
+            {
+                entry.Entity.UpdatedDate = DateTime.UtcNow;
+            }
+        }
+
+        return await base.SaveChangesAsync(cancellationToken);
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
