@@ -23,8 +23,6 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
 
         _mapper.Map(request, entity);
         await _repository.UpdateAsync(entity, cancellationToken);
-
-        var loaded = await _repository.GetByIdAsync(entity.Id, cancellationToken);
-        return _mapper.Map<ProductDto>(loaded!);
+        return _mapper.Map<ProductDto>(entity);
     }
 }
