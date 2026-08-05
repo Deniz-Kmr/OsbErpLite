@@ -6,6 +6,7 @@ public class Department : AuditableEntity
 {
     public string Name { get; set; } = default!;
     public Guid? ManagerId { get; set; }
+    public bool IsActive { get; set; } = true;
 
     // navigation
     public Employee? Manager { get; set; }

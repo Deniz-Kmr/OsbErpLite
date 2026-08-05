@@ -13,6 +13,7 @@ public class Employee : AuditableEntity
     public DateTime HireDate { get; set; }
     public decimal Salary { get; set; }
     public EmployeeStatus Status { get; set; } = EmployeeStatus.Active;
+    public bool IsActive { get; set; } = true;
 
     // navigation
     public Department Department { get; set; } = default!;
