@@ -20,6 +20,9 @@ public static class DependencyInjection
             options.UseNpgsql(connectionString));
 
         services.AddScoped<IBusinessPartnerRepository, BusinessPartnerRepository>();
+        services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+        services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<IStockMovementRepository, StockMovementRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
 
         services.AddSingleton<IJwtTokenService>(
