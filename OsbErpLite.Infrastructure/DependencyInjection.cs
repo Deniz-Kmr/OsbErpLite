@@ -26,6 +26,7 @@ public static class DependencyInjection
         services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
         services.AddScoped<ISalesOrderRepository, SalesOrderRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 
         services.AddSingleton<IJwtTokenService>(
             new JwtTokenService(configuration, jwtSecretKey));
