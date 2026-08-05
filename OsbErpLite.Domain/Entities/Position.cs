@@ -6,6 +6,7 @@ public class Position : AuditableEntity
 {
     public string Title { get; set; } = default!;
     public int Level { get; set; }
+    public bool IsActive { get; set; } = true;
 
     // navigation
     public ICollection<Employee> Employees { get; set; } = new List<Employee>();
