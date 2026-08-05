@@ -8,6 +8,7 @@ public class Product : AuditableEntity
     public string SKU { get; set; } = default!;
     public decimal UnitPrice { get; set; }
     public int StockQuantity { get; set; }
+    public bool IsActive { get; set; } = true;
     public Guid WarehouseId { get; set; }
 
     // navigation
