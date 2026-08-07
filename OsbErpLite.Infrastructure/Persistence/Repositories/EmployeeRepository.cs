@@ -68,4 +68,22 @@ public class EmployeeRepository : IEmployeeRepository
         _context.Employees.Update(entity);
         await _context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<int> CountActiveByDepartmentIdAsync(Guid departmentId, CancellationToken cancellationToken = default)
+    {
+        return await _context.Employees
+            .CountAsync(e => e.DepartmentId == departmentId && e.IsActive && e.Status == Domain.Enums.EmployeeStatus.Active, cancellationToken);
+    }
+
+    public async Task<int> CountActiveByPositionIdAsync(Guid positionId, CancellationToken cancellationToken = default)
+    {
+        return await _context.Employees
+            .CountAsync(e => e.PositionId == positionId && e.IsActive && e.Status == Domain.Enums.EmployeeStatus.Active, cancellationToken);
+    }
+
+    public async Task<int> CountActiveByManagerIdAsync(Guid managerId, CancellationToken cancellationToken = default)
+    {
+        return await _context.Employees
+            .CountAsync(e => e.ManagerId == managerId && e.IsActive && e.Status == Domain.Enums.EmployeeStatus.Active, cancellationToken);
+    }
 }
