@@ -64,4 +64,10 @@ public class ProductRepository : IProductRepository
 
         return await query.AnyAsync(cancellationToken);
     }
+
+    public async Task<int> CountActiveByWarehouseIdAsync(Guid warehouseId, CancellationToken cancellationToken = default)
+    {
+        return await _context.Products
+            .CountAsync(p => p.WarehouseId == warehouseId && p.IsActive, cancellationToken);
+    }
 }

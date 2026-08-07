@@ -9,4 +9,5 @@ public interface IProductRepository
     Task<Product> AddAsync(Product entity, CancellationToken cancellationToken = default);
     Task UpdateAsync(Product entity, CancellationToken cancellationToken = default);
     Task<bool> ExistsBySkuAsync(string sku, Guid? excludeId = null, CancellationToken cancellationToken = default);
+    Task<int> CountActiveByWarehouseIdAsync(Guid warehouseId, CancellationToken cancellationToken = default);
 }
