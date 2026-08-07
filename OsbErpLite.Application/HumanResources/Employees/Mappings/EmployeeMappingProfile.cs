@@ -12,7 +12,8 @@ public class EmployeeMappingProfile : Profile
         CreateMap<Employee, EmployeeDto>()
             .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department.Name))
             .ForMember(dest => dest.PositionTitle, opt => opt.MapFrom(src => src.Position.Title))
-            .ForMember(dest => dest.ManagerName, opt => opt.MapFrom(src => src.Manager != null ? src.Manager.FullName : null));
+            .ForMember(dest => dest.ManagerName, opt => opt.MapFrom(src => src.Manager != null ? src.Manager.FullName : null))
+            .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.Status.ToString()));
 
         CreateMap<CreateEmployeeCommand, Employee>();
 
