@@ -11,6 +11,7 @@ public class LeaveRequestDto
     public DateTime EndDate { get; set; }
     public string? Reason { get; set; }
     public LeaveRequestStatus Status { get; set; }
+    public string StatusName { get; set; } = default!;
     public Guid? ApprovedByEmployeeId { get; set; }
     public string? ApprovedByEmployeeName { get; set; }
     public DateTime CreatedDate { get; set; }

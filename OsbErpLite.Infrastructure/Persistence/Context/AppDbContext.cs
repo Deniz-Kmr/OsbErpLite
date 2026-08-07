@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using OsbErpLite.Application.Common.Interfaces;
 using OsbErpLite.Domain.Common;
 using OsbErpLite.Domain.Entities;
 
@@ -6,7 +7,15 @@ namespace OsbErpLite.Infrastructure.Persistence.Context;
 
 public class AppDbContext : DbContext
 {
+    private readonly ICurrentUserService? _currentUserService;
+
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+    public AppDbContext(DbContextOptions<AppDbContext> options, ICurrentUserService currentUserService)
+        : base(options)
+    {
+        _currentUserService = currentUserService;
+    }
 
     public DbSet<BusinessPartner> BusinessPartners => Set<BusinessPartner>();
     public DbSet<Product> Products => Set<Product>();
@@ -24,6 +33,8 @@ public class AppDbContext : DbContext
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
+        var currentUser = _currentUserService?.UserName;
+
         foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
         {
             if (entry.State == EntityState.Added)
@@ -32,10 +43,12 @@ public class AppDbContext : DbContext
                     entry.Entity.Id = Guid.NewGuid();
 
                 entry.Entity.CreatedDate = DateTime.UtcNow;
+                entry.Entity.CreatedBy = currentUser;
             }
             else if (entry.State == EntityState.Modified)
             {
                 entry.Entity.UpdatedDate = DateTime.UtcNow;
+                entry.Entity.UpdatedBy = currentUser;
             }
         }
 

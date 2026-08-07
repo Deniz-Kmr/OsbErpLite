@@ -5,6 +5,8 @@ using Serilog;
 using OsbErpLite.Application;
 using OsbErpLite.Infrastructure;
 using OsbErpLite.Api.Middleware;
+using OsbErpLite.Api.Services;
+using OsbErpLite.Application.Common.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,8 @@ var jwtSecretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY")
     ?? throw new InvalidOperationException("JWT_SECRET_KEY environment variable is not set.");
 
 // DI
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(connectionString, builder.Configuration, jwtSecretKey);
 builder.Services.AddAuthentication(options =>
