@@ -13,7 +13,8 @@ public class PurchaseOrderMappingProfile : Profile
             .ForMember(dest => dest.ApprovedByEmployeeName,
                 opt => opt.MapFrom(src => src.ApprovedByEmployee != null
                     ? src.ApprovedByEmployee.FullName
-                    : null));
+                    : null))
+            .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.Status.ToString()));
 
         CreateMap<PurchaseOrderLine, PurchaseOrderLineDto>()
             .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name))

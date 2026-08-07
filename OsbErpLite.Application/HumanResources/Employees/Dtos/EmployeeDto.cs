@@ -16,5 +16,6 @@ public class EmployeeDto
     public DateTime HireDate { get; set; }
     public decimal Salary { get; set; }
     public EmployeeStatus Status { get; set; }
+    public string StatusName { get; set; } = default!;
     public DateTime CreatedDate { get; set; }
 }
