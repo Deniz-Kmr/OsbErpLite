@@ -9,6 +9,7 @@ public class PurchaseOrderDto
     public string SupplierName { get; set; } = default!;
     public DateTime OrderDate { get; set; }
     public OrderStatus Status { get; set; }
+    public string StatusName { get; set; } = default!;
     public Guid? ApprovedByEmployeeId { get; set; }
     public string? ApprovedByEmployeeName { get; set; }
     public decimal TotalAmount { get; set; }
