@@ -10,7 +10,8 @@ public class StockMovementMappingProfile : Profile
     public StockMovementMappingProfile()
     {
         CreateMap<StockMovement, StockMovementDto>()
-            .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name));
+            .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name))
+            .ForMember(dest => dest.MovementTypeName, opt => opt.MapFrom(src => src.MovementType.ToString()));
 
         CreateMap<CreateStockMovementCommand, StockMovement>();
     }
