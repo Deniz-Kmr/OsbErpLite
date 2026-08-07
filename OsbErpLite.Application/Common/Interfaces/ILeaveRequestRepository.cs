@@ -9,4 +9,5 @@ public interface ILeaveRequestRepository
     Task<(List<LeaveRequest> Items, int TotalCount)> GetAllAsync(int page, int pageSize, Guid? employeeId = null, LeaveRequestStatus? status = null, CancellationToken cancellationToken = default);
     Task<LeaveRequest> AddAsync(LeaveRequest entity, CancellationToken cancellationToken = default);
     Task UpdateAsync(LeaveRequest entity, CancellationToken cancellationToken = default);
+    Task<int> CountPendingByEmployeeIdAsync(Guid employeeId, CancellationToken cancellationToken = default);
 }

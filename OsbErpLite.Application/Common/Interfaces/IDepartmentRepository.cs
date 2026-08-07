@@ -8,4 +8,5 @@ public interface IDepartmentRepository
     Task<(List<Department> Items, int TotalCount)> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken = default);
     Task<Department> AddAsync(Department entity, CancellationToken cancellationToken = default);
     Task UpdateAsync(Department entity, CancellationToken cancellationToken = default);
+    Task<bool> IsManagerOfAnyDepartmentAsync(Guid employeeId, CancellationToken cancellationToken = default);
 }
