@@ -9,4 +9,5 @@ public interface ISalesOrderRepository
     Task<(List<SalesOrder> Items, int TotalCount)> GetAllAsync(int page, int pageSize, OrderStatus? status = null, CancellationToken cancellationToken = default);
     Task<SalesOrder> AddAsync(SalesOrder entity, CancellationToken cancellationToken = default);
     Task UpdateAsync(SalesOrder entity, CancellationToken cancellationToken = default);
+    Task<int> CountIncompleteByCustomerIdAsync(Guid customerId, CancellationToken cancellationToken = default);
 }
