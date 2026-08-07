@@ -64,4 +64,10 @@ public class LeaveRequestRepository : ILeaveRequestRepository
         _context.LeaveRequests.Update(entity);
         await _context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<int> CountPendingByEmployeeIdAsync(Guid employeeId, CancellationToken cancellationToken = default)
+    {
+        return await _context.LeaveRequests
+            .CountAsync(lr => lr.EmployeeId == employeeId && lr.Status == LeaveRequestStatus.Pending, cancellationToken);
+    }
 }
