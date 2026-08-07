@@ -53,4 +53,10 @@ public class DepartmentRepository : IDepartmentRepository
         _context.Departments.Update(entity);
         await _context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<bool> IsManagerOfAnyDepartmentAsync(Guid employeeId, CancellationToken cancellationToken = default)
+    {
+        return await _context.Departments
+            .AnyAsync(d => d.ManagerId == employeeId && d.IsActive, cancellationToken);
+    }
 }

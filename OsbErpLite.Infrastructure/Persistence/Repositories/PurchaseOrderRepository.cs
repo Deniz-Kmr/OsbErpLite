@@ -67,4 +67,12 @@ public class PurchaseOrderRepository : IPurchaseOrderRepository
         _context.PurchaseOrders.Update(entity);
         await _context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<int> CountIncompleteBySupplierIdAsync(Guid supplierId, CancellationToken cancellationToken = default)
+    {
+        return await _context.PurchaseOrders
+            .CountAsync(po => po.SupplierId == supplierId
+                && po.Status != OrderStatus.Completed
+                && po.Status != OrderStatus.Rejected, cancellationToken);
+    }
 }
