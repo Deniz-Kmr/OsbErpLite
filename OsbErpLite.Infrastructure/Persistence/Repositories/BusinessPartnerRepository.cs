@@ -46,4 +46,18 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
         _context.BusinessPartners.Update(entity);
         await _context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<BusinessPartner?> GetByTaxNumberAsync(string taxNumber, CancellationToken cancellationToken = default)
+    {
+        return await _context.BusinessPartners
+            .FirstOrDefaultAsync(bp => bp.TaxNumber == taxNumber && bp.IsActive, cancellationToken);
+    }
+
+    public async Task<List<BusinessPartner>> GetAllActiveAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.BusinessPartners
+            .Where(bp => bp.IsActive)
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+    }
 }
