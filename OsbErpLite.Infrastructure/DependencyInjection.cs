@@ -49,6 +49,10 @@ public static class DependencyInjection
             client.DefaultRequestHeaders.Add("APIKey", sapApiKey);
             client.Timeout = TimeSpan.FromSeconds(30);
         })
+        .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+        {
+            AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate
+        })
         .AddTransientHttpErrorPolicy(policy =>
             policy.WaitAndRetryAsync(3, retryAttempt =>
                 TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))));

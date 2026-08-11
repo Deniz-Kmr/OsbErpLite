@@ -18,8 +18,8 @@ public class SapBusinessPartnerClient : ISapBusinessPartnerClient
 
     public async Task<List<SapBusinessPartnerRecord>> GetBusinessPartnersAsync(CancellationToken cancellationToken = default)
     {
-        var selectFields = "BusinessPartner,BusinessPartnerFullName,BusinessPartnerName,BusinessPartnerCategory,TaxNumber1,TaxNumber2,SearchTerm1,BusinessPartnerGrouping";
-        var requestUri = $"A_BusinessPartner?$format=json&$select={selectFields}";
+        var selectFields = "BusinessPartner,BusinessPartnerFullName,BusinessPartnerName,BusinessPartnerCategory,SearchTerm1,BusinessPartnerGrouping";
+        var requestUri = $"A_BusinessPartner?$format=json&$top=100&$select={selectFields}";
 
         _logger.LogInformation("SAP Business Partner servisi cagriliyor. URI: {RequestUri}", requestUri);
 
@@ -42,7 +42,7 @@ public class SapBusinessPartnerClient : ISapBusinessPartnerClient
         {
             SapId = dto.BusinessPartner,
             Name = dto.BusinessPartnerFullName ?? dto.BusinessPartnerName,
-            TaxNumber = dto.TaxNumber1 ?? dto.TaxNumber2,
+            TaxNumber = dto.SearchTerm1,
             Category = dto.BusinessPartnerCategory,
             SearchTerm = dto.SearchTerm1
         }).ToList();

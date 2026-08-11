@@ -19,12 +19,6 @@ public class SapBusinessPartnerDto
     [JsonPropertyName("BusinessPartnerCategory")]
     public string? BusinessPartnerCategory { get; set; }
 
-    [JsonPropertyName("TaxNumber1")]
-    public string? TaxNumber1 { get; set; }
-
-    [JsonPropertyName("TaxNumber2")]
-    public string? TaxNumber2 { get; set; }
-
     [JsonPropertyName("SearchTerm1")]
     public string? SearchTerm1 { get; set; }
 
