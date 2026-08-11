@@ -12,15 +12,18 @@ public class SyncBusinessPartnersFromSapCommandHandler
 {
     private readonly ISapBusinessPartnerClient _sapClient;
     private readonly IBusinessPartnerRepository _repository;
+    private readonly ICurrentUserService _currentUserService;
     private readonly ILogger<SyncBusinessPartnersFromSapCommandHandler> _logger;
 
     public SyncBusinessPartnersFromSapCommandHandler(
         ISapBusinessPartnerClient sapClient,
         IBusinessPartnerRepository repository,
+        ICurrentUserService currentUserService,
         ILogger<SyncBusinessPartnersFromSapCommandHandler> logger)
     {
         _sapClient = sapClient;
         _repository = repository;
+        _currentUserService = currentUserService;
         _logger = logger;
     }
 
@@ -30,8 +33,12 @@ public class SyncBusinessPartnersFromSapCommandHandler
     {
         var result = new SyncResultDto();
 
+        var userName = _currentUserService.UserName ?? "unknown";
+        _logger.LogInformation("SAP sync basladi. Tetikleyen: {User}", userName);
+
         var sapRecords = await _sapClient.GetBusinessPartnersAsync(cancellationToken);
-        _logger.LogInformation("SAP'den {Count} kayit alindi, eslestirme basliyor.", sapRecords.Count);
+        _logger.LogInformation("SAP'den {Count} kayit alindi, eslestirme basliyor. Tetikleyen: {User}",
+            sapRecords.Count, userName);
 
         foreach (var record in sapRecords)
         {
@@ -76,8 +83,8 @@ public class SyncBusinessPartnersFromSapCommandHandler
         }
 
         _logger.LogInformation(
-            "SAP sync tamamlandi. Eklenen: {Added}, Guncellenen: {Updated}, Hata: {ErrorCount}",
-            result.AddedCount, result.UpdatedCount, result.Errors.Count);
+            "SAP sync tamamlandi. Eklenen: {Added}, Guncellenen: {Updated}, Hata: {ErrorCount}, Tetikleyen: {User}",
+            result.AddedCount, result.UpdatedCount, result.Errors.Count, userName);
 
         return result;
     }
