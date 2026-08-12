@@ -16,7 +16,8 @@ docker-compose*.yml
 **/[Dd]ebug
 **/[Rr]elease
 
-tests/
+tests/**/bin
+tests/**/obj
 graphify-out/
 .claude/
 CLAUDE.md

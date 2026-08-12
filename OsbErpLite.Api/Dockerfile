@@ -6,6 +6,8 @@ COPY OsbErpLite.Domain/OsbErpLite.Domain.csproj OsbErpLite.Domain/
 COPY OsbErpLite.Application/OsbErpLite.Application.csproj OsbErpLite.Application/
 COPY OsbErpLite.Infrastructure/OsbErpLite.Infrastructure.csproj OsbErpLite.Infrastructure/
 COPY OsbErpLite.Api/OsbErpLite.Api.csproj OsbErpLite.Api/
+COPY tests/OsbErpLite.Domain.Tests/OsbErpLite.Domain.Tests.csproj tests/OsbErpLite.Domain.Tests/
+COPY tests/OsbErpLite.Application.Tests/OsbErpLite.Application.Tests.csproj tests/OsbErpLite.Application.Tests/
 RUN dotnet restore
 
 COPY OsbErpLite.Domain/ OsbErpLite.Domain/
