@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using FluentValidation;
 using OsbErpLite.Api.Common;
+using OsbErpLite.Domain.Common;
 
 namespace OsbErpLite.Api.Middleware;
 
@@ -40,6 +41,10 @@ public class ExceptionHandlingMiddleware
             ValidationException validationEx => (
                 HttpStatusCode.BadRequest,
                 string.Join(" | ", validationEx.Errors.Select(e => e.ErrorMessage))
+            ),
+            AuthenticationException => (
+                HttpStatusCode.Unauthorized,
+                exception.Message
             ),
             InvalidOperationException => (
                 HttpStatusCode.BadRequest,

@@ -37,6 +37,23 @@ public class AuthController : ControllerBase
         return Ok(ApiResponse<AuthResponseDto>.Ok(result));
     }
 
+    [HttpPost("refresh-token")]
+    [ProducesResponseType(typeof(ApiResponse<AuthResponseDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return Ok(ApiResponse<AuthResponseDto>.Ok(result));
+    }
+
+    [HttpPost("logout")]
+    [Authorize]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Logout([FromBody] RevokeRefreshTokenCommand command)
+    {
+        await _mediator.Send(command);
+        return Ok(ApiResponse<object>.Ok(null!, "Logged out successfully."));
+    }
+
     [HttpGet("users")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ApiResponse<PaginatedList<UserDto>>), StatusCodes.Status200OK)]

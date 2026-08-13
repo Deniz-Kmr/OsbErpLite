@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -13,14 +14,16 @@ public class JwtTokenService : IJwtTokenService
     private readonly string _secretKey;
     private readonly string _issuer;
     private readonly string _audience;
-    private readonly int _expiryMinutes;
+    private readonly int _accessTokenExpiryMinutes;
+    private readonly int _refreshTokenExpiryDays;
 
     public JwtTokenService(IConfiguration configuration, string secretKey)
     {
         _secretKey = secretKey;
         _issuer = configuration["Jwt:Issuer"] ?? "OsbErpLite";
         _audience = configuration["Jwt:Audience"] ?? "OsbErpLiteUsers";
-        _expiryMinutes = int.TryParse(configuration["Jwt:ExpiryMinutes"], out var m) ? m : 60;
+        _accessTokenExpiryMinutes = int.TryParse(configuration["Jwt:AccessTokenExpiryMinutes"], out var m) ? m : 15;
+        _refreshTokenExpiryDays = int.TryParse(configuration["Jwt:RefreshTokenExpiryDays"], out var d) ? d : 7;
     }
 
     public string GenerateToken(User user)
@@ -42,11 +45,21 @@ public class JwtTokenService : IJwtTokenService
             issuer: _issuer,
             audience: _audience,
             claims: claims,
-            expires: GetExpiry(),
+            expires: GetAccessTokenExpiry(),
             signingCredentials: credentials);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public DateTime GetExpiry() => DateTime.UtcNow.AddMinutes(_expiryMinutes);
+    public string GenerateRefreshToken()
+    {
+        var randomBytes = new byte[64];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomBytes);
+        return Convert.ToBase64String(randomBytes);
+    }
+
+    public DateTime GetAccessTokenExpiry() => DateTime.UtcNow.AddMinutes(_accessTokenExpiryMinutes);
+
+    public int GetRefreshTokenExpiryDays() => _refreshTokenExpiryDays;
 }

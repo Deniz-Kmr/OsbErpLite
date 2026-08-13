@@ -1,6 +1,7 @@
 using MediatR;
 using OsbErpLite.Application.Common.Interfaces;
 using OsbErpLite.Application.Identity.Dtos;
+using OsbErpLite.Domain.Entities;
 
 namespace OsbErpLite.Application.Identity.Commands;
 
@@ -8,11 +9,16 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto
 {
     private readonly IUserRepository _userRepository;
     private readonly IJwtTokenService _jwtTokenService;
+    private readonly IRefreshTokenRepository _refreshTokenRepository;
 
-    public LoginCommandHandler(IUserRepository userRepository, IJwtTokenService jwtTokenService)
+    public LoginCommandHandler(
+        IUserRepository userRepository,
+        IJwtTokenService jwtTokenService,
+        IRefreshTokenRepository refreshTokenRepository)
     {
         _userRepository = userRepository;
         _jwtTokenService = jwtTokenService;
+        _refreshTokenRepository = refreshTokenRepository;
     }
 
     public async Task<AuthResponseDto> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -27,8 +33,18 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto
             throw new KeyNotFoundException("Invalid username or password.");
 
         var token = _jwtTokenService.GenerateToken(user);
-        var expiry = _jwtTokenService.GetExpiry();
+        var expiry = _jwtTokenService.GetAccessTokenExpiry();
 
-        return new AuthResponseDto(token, user.Username, user.Role.ToString(), expiry);
+        var refreshToken = new RefreshToken
+        {
+            Token = _jwtTokenService.GenerateRefreshToken(),
+            UserId = user.Id,
+            ExpiresAt = DateTime.UtcNow.AddDays(_jwtTokenService.GetRefreshTokenExpiryDays()),
+            IsRevoked = false
+        };
+
+        await _refreshTokenRepository.AddAsync(refreshToken, cancellationToken);
+
+        return new AuthResponseDto(token, refreshToken.Token, user.Username, user.Role.ToString(), expiry);
     }
 }

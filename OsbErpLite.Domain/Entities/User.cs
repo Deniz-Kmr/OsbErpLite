@@ -13,4 +13,5 @@ public class User : AuditableEntity
 
     // navigation
     public Employee? Employee { get; set; }
+    public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 }
