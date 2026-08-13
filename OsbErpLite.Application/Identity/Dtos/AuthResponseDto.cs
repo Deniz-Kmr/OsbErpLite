@@ -1,7 +1,7 @@
 namespace OsbErpLite.Application.Identity.Dtos;
 
 public record AuthResponseDto(
-    string AccessToken,
+    string Token,
     string RefreshToken,
     string Username,
     string Role,

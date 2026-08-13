@@ -32,7 +32,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto
         if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             throw new KeyNotFoundException("Invalid username or password.");
 
-        var accessToken = _jwtTokenService.GenerateToken(user);
+        var token = _jwtTokenService.GenerateToken(user);
         var expiry = _jwtTokenService.GetAccessTokenExpiry();
 
         var refreshToken = new RefreshToken
@@ -45,6 +45,6 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto
 
         await _refreshTokenRepository.AddAsync(refreshToken, cancellationToken);
 
-        return new AuthResponseDto(accessToken, refreshToken.Token, user.Username, user.Role.ToString(), expiry);
+        return new AuthResponseDto(token, refreshToken.Token, user.Username, user.Role.ToString(), expiry);
     }
 }

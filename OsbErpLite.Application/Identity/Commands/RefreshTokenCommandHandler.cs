@@ -42,7 +42,7 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, A
         existingToken.IsRevoked = true;
         await _refreshTokenRepository.UpdateAsync(existingToken, cancellationToken);
 
-        var accessToken = _jwtTokenService.GenerateToken(user);
+        var token = _jwtTokenService.GenerateToken(user);
         var expiry = _jwtTokenService.GetAccessTokenExpiry();
 
         var newRefreshToken = new RefreshToken
@@ -55,6 +55,6 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, A
 
         await _refreshTokenRepository.AddAsync(newRefreshToken, cancellationToken);
 
-        return new AuthResponseDto(accessToken, newRefreshToken.Token, user.Username, user.Role.ToString(), expiry);
+        return new AuthResponseDto(token, newRefreshToken.Token, user.Username, user.Role.ToString(), expiry);
     }
 }

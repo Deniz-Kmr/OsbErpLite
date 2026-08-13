@@ -53,7 +53,7 @@ public class LoginCommandHandlerTests
         var result = await _handler.Handle(command, CancellationToken.None);
 
         result.Should().NotBeNull();
-        result.AccessToken.Should().Be("mock-jwt-token");
+        result.Token.Should().Be("mock-jwt-token");
         result.RefreshToken.Should().Be("mock-refresh-token");
         result.Username.Should().Be("admin");
         result.Role.Should().Be("Admin");
