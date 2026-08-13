@@ -5,5 +5,7 @@ namespace OsbErpLite.Application.Common.Interfaces;
 public interface IJwtTokenService
 {
     string GenerateToken(User user);
-    DateTime GetExpiry();
+    string GenerateRefreshToken();
+    DateTime GetAccessTokenExpiry();
+    int GetRefreshTokenExpiryDays();
 }
