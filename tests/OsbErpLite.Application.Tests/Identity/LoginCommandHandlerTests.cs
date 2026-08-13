@@ -12,13 +12,18 @@ public class LoginCommandHandlerTests
 {
     private readonly Mock<IUserRepository> _userRepoMock;
     private readonly Mock<IJwtTokenService> _jwtServiceMock;
+    private readonly Mock<IRefreshTokenRepository> _refreshTokenRepoMock;
     private readonly LoginCommandHandler _handler;
 
     public LoginCommandHandlerTests()
     {
         _userRepoMock = new Mock<IUserRepository>();
         _jwtServiceMock = new Mock<IJwtTokenService>();
-        _handler = new LoginCommandHandler(_userRepoMock.Object, _jwtServiceMock.Object);
+        _refreshTokenRepoMock = new Mock<IRefreshTokenRepository>();
+        _handler = new LoginCommandHandler(
+            _userRepoMock.Object,
+            _jwtServiceMock.Object,
+            _refreshTokenRepoMock.Object);
     }
 
     [Fact]
@@ -38,13 +43,18 @@ public class LoginCommandHandlerTests
         _userRepoMock.Setup(r => r.GetByUsernameAsync("admin", It.IsAny<CancellationToken>()))
             .ReturnsAsync(user);
         _jwtServiceMock.Setup(s => s.GenerateToken(user)).Returns("mock-jwt-token");
-        _jwtServiceMock.Setup(s => s.GetExpiry()).Returns(expiry);
+        _jwtServiceMock.Setup(s => s.GetAccessTokenExpiry()).Returns(expiry);
+        _jwtServiceMock.Setup(s => s.GenerateRefreshToken()).Returns("mock-refresh-token");
+        _jwtServiceMock.Setup(s => s.GetRefreshTokenExpiryDays()).Returns(7);
+        _refreshTokenRepoMock.Setup(r => r.AddAsync(It.IsAny<RefreshToken>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((RefreshToken rt, CancellationToken _) => rt);
 
         var command = new LoginCommand("admin", "CorrectPassword");
         var result = await _handler.Handle(command, CancellationToken.None);
 
         result.Should().NotBeNull();
-        result.Token.Should().Be("mock-jwt-token");
+        result.AccessToken.Should().Be("mock-jwt-token");
+        result.RefreshToken.Should().Be("mock-refresh-token");
         result.Username.Should().Be("admin");
         result.Role.Should().Be("Admin");
         result.ExpiresAt.Should().Be(expiry);
