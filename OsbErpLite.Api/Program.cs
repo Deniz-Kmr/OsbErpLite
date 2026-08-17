@@ -47,6 +47,7 @@ builder.Services.AddAuthentication(options =>
 });
 builder.Services.AddAuthorization();
 builder.Services.AddApiRateLimiting(builder.Configuration);
+builder.Services.AddApiCors(builder.Configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -65,6 +66,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors(CorsServiceExtensions.FrontendPolicyName);
 app.UseApiRateLimiting(app.Configuration);
 app.UseAuthentication();
 app.UseAuthorization();
