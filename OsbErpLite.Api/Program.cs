@@ -48,6 +48,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 builder.Services.AddApiRateLimiting(builder.Configuration);
 builder.Services.AddApiCors(builder.Configuration);
+builder.Services.AddHealthCheckServices(connectionString);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -71,5 +72,6 @@ app.UseApiRateLimiting(app.Configuration);
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHealthCheckEndpoints();
 
 app.Run();
