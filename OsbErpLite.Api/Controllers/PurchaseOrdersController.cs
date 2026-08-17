@@ -27,6 +27,8 @@ public class PurchaseOrdersController : ControllerBase
         _logger = logger;
     }
 
+    // The Global ExceptionHandlingMiddleware already automatically generates 400/401/403/404 responses.
+    // I added ProducesResponseType attributes here to provide examples in the Swagger UI
     /// <summary>
     /// Creates a new purchase order in Draft status.
     /// </summary>
@@ -35,6 +37,9 @@ public class PurchaseOrdersController : ControllerBase
     [HttpPost]
     [Authorize(Roles = "Admin,Manager,Employee")]
     [ProducesResponseType(typeof(ApiResponse<PurchaseOrderDto>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Create([FromBody] CreatePurchaseOrderDto dto)
     {
         var command = new CreatePurchaseOrderCommand(dto.SupplierId, dto.OrderDate, dto.Lines);
@@ -50,6 +55,8 @@ public class PurchaseOrdersController : ControllerBase
     /// <param name="id">The purchase order's unique identifier.</param>
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<PurchaseOrderDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(Guid id)
     {
         var result = await _mediator.Send(new GetPurchaseOrderByIdQuery(id));
@@ -66,6 +73,7 @@ public class PurchaseOrdersController : ControllerBase
     /// <param name="status">Optional order status filter (Draft, Pending, Approved, Rejected, Completed).</param>
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<PaginatedList<PurchaseOrderDto>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetAll(
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 10,
@@ -82,6 +90,10 @@ public class PurchaseOrdersController : ControllerBase
     [HttpPut("{id:guid}/approve")]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<PurchaseOrderDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Approve(Guid id)
     {
         var employeeId = GetEmployeeIdFromClaims();
@@ -101,6 +113,10 @@ public class PurchaseOrdersController : ControllerBase
     [HttpPut("{id:guid}/reject")]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<PurchaseOrderDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Reject(Guid id)
     {
         var employeeId = GetEmployeeIdFromClaims();
@@ -120,6 +136,10 @@ public class PurchaseOrdersController : ControllerBase
     [HttpPut("{id:guid}/complete")]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<PurchaseOrderDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Complete(Guid id)
     {
         var employeeId = GetEmployeeIdFromClaims();
