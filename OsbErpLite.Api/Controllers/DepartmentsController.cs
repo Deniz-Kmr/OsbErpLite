@@ -9,6 +9,9 @@ using OsbErpLite.Application.HumanResources.Departments.Queries;
 
 namespace OsbErpLite.Api.Controllers;
 
+/// <summary>
+/// Department management within the HR module.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
@@ -23,6 +26,11 @@ public class DepartmentsController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Creates a new department.
+    /// </summary>
+    /// <param name="dto">Department name and optional manager.</param>
+    /// <returns>The newly created department.</returns>
     [HttpPost]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<DepartmentDto>), StatusCodes.Status201Created)]
@@ -35,6 +43,12 @@ public class DepartmentsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, ApiResponse<DepartmentDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Updates an existing department.
+    /// </summary>
+    /// <param name="id">The department's unique identifier.</param>
+    /// <param name="dto">Updated name and/or manager.</param>
+    /// <returns>The updated department.</returns>
     [HttpPut("{id:guid}")]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<DepartmentDto>), StatusCodes.Status200OK)]
@@ -47,6 +61,10 @@ public class DepartmentsController : ControllerBase
         return Ok(ApiResponse<DepartmentDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Soft-deletes a department. Blocked if it has active employees.
+    /// </summary>
+    /// <param name="id">The department's unique identifier.</param>
     [HttpDelete("{id:guid}")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
@@ -58,6 +76,10 @@ public class DepartmentsController : ControllerBase
         return Ok(ApiResponse<object>.Ok(null!));
     }
 
+    /// <summary>
+    /// Retrieves a department by unique identifier.
+    /// </summary>
+    /// <param name="id">The department's unique identifier.</param>
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<DepartmentDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetById(Guid id)
@@ -68,6 +90,11 @@ public class DepartmentsController : ControllerBase
         return Ok(ApiResponse<DepartmentDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Lists all active departments with pagination.
+    /// </summary>
+    /// <param name="pageNumber">Page number (default: 1).</param>
+    /// <param name="pageSize">Items per page (default: 10).</param>
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<PaginatedList<DepartmentDto>>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)

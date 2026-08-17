@@ -10,6 +10,9 @@ using OsbErpLite.Domain.Enums;
 
 namespace OsbErpLite.Api.Controllers;
 
+/// <summary>
+/// Leave request management with approval workflow (Pending → Approved/Rejected).
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
@@ -24,6 +27,11 @@ public class LeaveRequestsController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Creates a new leave request in Pending status.
+    /// </summary>
+    /// <param name="dto">Employee, date range, and reason for the leave.</param>
+    /// <returns>The newly created leave request.</returns>
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<LeaveRequestDto>), StatusCodes.Status201Created)]
     public async Task<IActionResult> Create([FromBody] CreateLeaveRequestDto dto)
@@ -35,6 +43,10 @@ public class LeaveRequestsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, ApiResponse<LeaveRequestDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Retrieves a leave request by unique identifier.
+    /// </summary>
+    /// <param name="id">The leave request's unique identifier.</param>
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<LeaveRequestDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetById(Guid id)
@@ -45,6 +57,13 @@ public class LeaveRequestsController : ControllerBase
         return Ok(ApiResponse<LeaveRequestDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Lists leave requests with pagination and optional employee/status filters.
+    /// </summary>
+    /// <param name="pageNumber">Page number (default: 1).</param>
+    /// <param name="pageSize">Items per page (default: 10).</param>
+    /// <param name="employeeId">Optional employee filter.</param>
+    /// <param name="status">Optional status filter (Pending, Approved, Rejected).</param>
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<PaginatedList<LeaveRequestDto>>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll(
@@ -57,6 +76,10 @@ public class LeaveRequestsController : ControllerBase
         return Ok(ApiResponse<PaginatedList<LeaveRequestDto>>.Ok(result));
     }
 
+    /// <summary>
+    /// Approves a pending leave request.
+    /// </summary>
+    /// <param name="id">The leave request's unique identifier.</param>
     [HttpPut("{id:guid}/approve")]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<LeaveRequestDto>), StatusCodes.Status200OK)]
@@ -72,6 +95,10 @@ public class LeaveRequestsController : ControllerBase
         return Ok(ApiResponse<LeaveRequestDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Rejects a pending leave request.
+    /// </summary>
+    /// <param name="id">The leave request's unique identifier.</param>
     [HttpPut("{id:guid}/reject")]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<LeaveRequestDto>), StatusCodes.Status200OK)]

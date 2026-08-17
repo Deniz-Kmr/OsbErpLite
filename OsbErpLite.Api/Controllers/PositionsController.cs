@@ -9,6 +9,9 @@ using OsbErpLite.Application.HumanResources.Positions.Queries;
 
 namespace OsbErpLite.Api.Controllers;
 
+/// <summary>
+/// Position (job title and level) management within the HR module.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
@@ -23,6 +26,11 @@ public class PositionsController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Creates a new position.
+    /// </summary>
+    /// <param name="dto">Position title and level.</param>
+    /// <returns>The newly created position.</returns>
     [HttpPost]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<PositionDto>), StatusCodes.Status201Created)]
@@ -35,6 +43,12 @@ public class PositionsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, ApiResponse<PositionDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Updates an existing position.
+    /// </summary>
+    /// <param name="id">The position's unique identifier.</param>
+    /// <param name="dto">Updated title and/or level.</param>
+    /// <returns>The updated position.</returns>
     [HttpPut("{id:guid}")]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<PositionDto>), StatusCodes.Status200OK)]
@@ -47,6 +61,10 @@ public class PositionsController : ControllerBase
         return Ok(ApiResponse<PositionDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Soft-deletes a position. Blocked if it has active employees.
+    /// </summary>
+    /// <param name="id">The position's unique identifier.</param>
     [HttpDelete("{id:guid}")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
@@ -58,6 +76,10 @@ public class PositionsController : ControllerBase
         return Ok(ApiResponse<object>.Ok(null!));
     }
 
+    /// <summary>
+    /// Retrieves a position by unique identifier.
+    /// </summary>
+    /// <param name="id">The position's unique identifier.</param>
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<PositionDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetById(Guid id)
@@ -68,6 +90,11 @@ public class PositionsController : ControllerBase
         return Ok(ApiResponse<PositionDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Lists all active positions with pagination.
+    /// </summary>
+    /// <param name="pageNumber">Page number (default: 1).</param>
+    /// <param name="pageSize">Items per page (default: 10).</param>
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<PaginatedList<PositionDto>>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)

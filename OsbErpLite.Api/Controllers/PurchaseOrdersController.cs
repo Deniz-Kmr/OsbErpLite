@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +10,9 @@ using OsbErpLite.Domain.Enums;
 
 namespace OsbErpLite.Api.Controllers;
 
+/// <summary>
+/// Purchase order lifecycle management (create, approve, reject, complete).
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
@@ -25,9 +27,19 @@ public class PurchaseOrdersController : ControllerBase
         _logger = logger;
     }
 
+    // The Global ExceptionHandlingMiddleware already automatically generates 400/401/403/404 responses.
+    // I added ProducesResponseType attributes here to provide examples in the Swagger UI
+    /// <summary>
+    /// Creates a new purchase order in Draft status.
+    /// </summary>
+    /// <param name="dto">Supplier, order date, and order lines with product/quantity/price.</param>
+    /// <returns>The newly created purchase order.</returns>
     [HttpPost]
     [Authorize(Roles = "Admin,Manager,Employee")]
     [ProducesResponseType(typeof(ApiResponse<PurchaseOrderDto>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Create([FromBody] CreatePurchaseOrderDto dto)
     {
         var command = new CreatePurchaseOrderCommand(dto.SupplierId, dto.OrderDate, dto.Lines);
@@ -37,8 +49,14 @@ public class PurchaseOrdersController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, ApiResponse<PurchaseOrderDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Retrieves a purchase order by unique identifier.
+    /// </summary>
+    /// <param name="id">The purchase order's unique identifier.</param>
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<PurchaseOrderDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(Guid id)
     {
         var result = await _mediator.Send(new GetPurchaseOrderByIdQuery(id));
@@ -47,8 +65,15 @@ public class PurchaseOrdersController : ControllerBase
         return Ok(ApiResponse<PurchaseOrderDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Lists all purchase orders with pagination and optional status filter.
+    /// </summary>
+    /// <param name="pageNumber">Page number (default: 1).</param>
+    /// <param name="pageSize">Items per page (default: 10).</param>
+    /// <param name="status">Optional order status filter (Draft, Pending, Approved, Rejected, Completed).</param>
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<PaginatedList<PurchaseOrderDto>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetAll(
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 10,
@@ -58,9 +83,17 @@ public class PurchaseOrdersController : ControllerBase
         return Ok(ApiResponse<PaginatedList<PurchaseOrderDto>>.Ok(result));
     }
 
+    /// <summary>
+    /// Approves a purchase order. Transitions status from Draft/Pending to Approved.
+    /// </summary>
+    /// <param name="id">The purchase order's unique identifier.</param>
     [HttpPut("{id:guid}/approve")]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<PurchaseOrderDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Approve(Guid id)
     {
         var employeeId = GetEmployeeIdFromClaims();
@@ -73,9 +106,17 @@ public class PurchaseOrdersController : ControllerBase
         return Ok(ApiResponse<PurchaseOrderDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Rejects a purchase order. Transitions status to Rejected.
+    /// </summary>
+    /// <param name="id">The purchase order's unique identifier.</param>
     [HttpPut("{id:guid}/reject")]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<PurchaseOrderDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Reject(Guid id)
     {
         var employeeId = GetEmployeeIdFromClaims();
@@ -88,9 +129,17 @@ public class PurchaseOrdersController : ControllerBase
         return Ok(ApiResponse<PurchaseOrderDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Completes a purchase order. Triggers automatic stock-in movement for all order lines.
+    /// </summary>
+    /// <param name="id">The purchase order's unique identifier.</param>
     [HttpPut("{id:guid}/complete")]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<PurchaseOrderDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Complete(Guid id)
     {
         var employeeId = GetEmployeeIdFromClaims();
