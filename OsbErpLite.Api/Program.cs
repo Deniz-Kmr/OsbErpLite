@@ -51,8 +51,7 @@ builder.Services.AddApiCors(builder.Configuration);
 builder.Services.AddHealthCheckServices(connectionString);
 
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerServices();
 
 var app = builder.Build();
 

@@ -9,6 +9,9 @@ using OsbErpLite.Application.Warehouses.Queries;
 
 namespace OsbErpLite.Api.Controllers;
 
+/// <summary>
+/// Warehouse management operations.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
@@ -23,6 +26,11 @@ public class WarehousesController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Creates a new warehouse.
+    /// </summary>
+    /// <param name="command">Warehouse name and location.</param>
+    /// <returns>The newly created warehouse.</returns>
     [HttpPost]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<WarehouseDto>), StatusCodes.Status201Created)]
@@ -34,6 +42,12 @@ public class WarehousesController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, ApiResponse<WarehouseDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Updates an existing warehouse.
+    /// </summary>
+    /// <param name="id">The warehouse's unique identifier.</param>
+    /// <param name="dto">Updated name and/or location.</param>
+    /// <returns>The updated warehouse.</returns>
     [HttpPut("{id:guid}")]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<WarehouseDto>), StatusCodes.Status200OK)]
@@ -46,6 +60,10 @@ public class WarehousesController : ControllerBase
         return Ok(ApiResponse<WarehouseDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Soft-deletes a warehouse. Blocked if it contains active products.
+    /// </summary>
+    /// <param name="id">The warehouse's unique identifier.</param>
     [HttpDelete("{id:guid}")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
@@ -57,6 +75,10 @@ public class WarehousesController : ControllerBase
         return Ok(ApiResponse<object>.Ok(null!));
     }
 
+    /// <summary>
+    /// Retrieves a warehouse by unique identifier.
+    /// </summary>
+    /// <param name="id">The warehouse's unique identifier.</param>
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<WarehouseDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetById(Guid id)
@@ -68,6 +90,11 @@ public class WarehousesController : ControllerBase
         return Ok(ApiResponse<WarehouseDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Lists all active warehouses with pagination.
+    /// </summary>
+    /// <param name="pageNumber">Page number (default: 1).</param>
+    /// <param name="pageSize">Items per page (default: 10).</param>
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<PaginatedList<WarehouseDto>>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)

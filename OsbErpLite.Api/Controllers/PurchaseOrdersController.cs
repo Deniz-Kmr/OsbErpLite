@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +10,9 @@ using OsbErpLite.Domain.Enums;
 
 namespace OsbErpLite.Api.Controllers;
 
+/// <summary>
+/// Purchase order lifecycle management (create, approve, reject, complete).
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
@@ -25,6 +27,11 @@ public class PurchaseOrdersController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Creates a new purchase order in Draft status.
+    /// </summary>
+    /// <param name="dto">Supplier, order date, and order lines with product/quantity/price.</param>
+    /// <returns>The newly created purchase order.</returns>
     [HttpPost]
     [Authorize(Roles = "Admin,Manager,Employee")]
     [ProducesResponseType(typeof(ApiResponse<PurchaseOrderDto>), StatusCodes.Status201Created)]
@@ -37,6 +44,10 @@ public class PurchaseOrdersController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, ApiResponse<PurchaseOrderDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Retrieves a purchase order by unique identifier.
+    /// </summary>
+    /// <param name="id">The purchase order's unique identifier.</param>
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<PurchaseOrderDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetById(Guid id)
@@ -47,6 +58,12 @@ public class PurchaseOrdersController : ControllerBase
         return Ok(ApiResponse<PurchaseOrderDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Lists all purchase orders with pagination and optional status filter.
+    /// </summary>
+    /// <param name="pageNumber">Page number (default: 1).</param>
+    /// <param name="pageSize">Items per page (default: 10).</param>
+    /// <param name="status">Optional order status filter (Draft, Pending, Approved, Rejected, Completed).</param>
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<PaginatedList<PurchaseOrderDto>>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll(
@@ -58,6 +75,10 @@ public class PurchaseOrdersController : ControllerBase
         return Ok(ApiResponse<PaginatedList<PurchaseOrderDto>>.Ok(result));
     }
 
+    /// <summary>
+    /// Approves a purchase order. Transitions status from Draft/Pending to Approved.
+    /// </summary>
+    /// <param name="id">The purchase order's unique identifier.</param>
     [HttpPut("{id:guid}/approve")]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<PurchaseOrderDto>), StatusCodes.Status200OK)]
@@ -73,6 +94,10 @@ public class PurchaseOrdersController : ControllerBase
         return Ok(ApiResponse<PurchaseOrderDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Rejects a purchase order. Transitions status to Rejected.
+    /// </summary>
+    /// <param name="id">The purchase order's unique identifier.</param>
     [HttpPut("{id:guid}/reject")]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<PurchaseOrderDto>), StatusCodes.Status200OK)]
@@ -88,6 +113,10 @@ public class PurchaseOrdersController : ControllerBase
         return Ok(ApiResponse<PurchaseOrderDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Completes a purchase order. Triggers automatic stock-in movement for all order lines.
+    /// </summary>
+    /// <param name="id">The purchase order's unique identifier.</param>
     [HttpPut("{id:guid}/complete")]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<PurchaseOrderDto>), StatusCodes.Status200OK)]

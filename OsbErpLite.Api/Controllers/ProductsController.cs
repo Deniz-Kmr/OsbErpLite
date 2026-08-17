@@ -9,6 +9,9 @@ using OsbErpLite.Application.Products.Queries;
 
 namespace OsbErpLite.Api.Controllers;
 
+/// <summary>
+/// Product and inventory management operations.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
@@ -23,6 +26,11 @@ public class ProductsController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Creates a new product.
+    /// </summary>
+    /// <param name="command">Product details including name, SKU, unit price, and warehouse.</param>
+    /// <returns>The newly created product.</returns>
     [HttpPost]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<ProductDto>), StatusCodes.Status201Created)]
@@ -34,6 +42,12 @@ public class ProductsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, ApiResponse<ProductDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Updates an existing product.
+    /// </summary>
+    /// <param name="id">The product's unique identifier.</param>
+    /// <param name="dto">Updated fields.</param>
+    /// <returns>The updated product.</returns>
     [HttpPut("{id:guid}")]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<ProductDto>), StatusCodes.Status200OK)]
@@ -46,6 +60,10 @@ public class ProductsController : ControllerBase
         return Ok(ApiResponse<ProductDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Soft-deletes a product.
+    /// </summary>
+    /// <param name="id">The product's unique identifier.</param>
     [HttpDelete("{id:guid}")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
@@ -57,6 +75,10 @@ public class ProductsController : ControllerBase
         return Ok(ApiResponse<object>.Ok(null!));
     }
 
+    /// <summary>
+    /// Retrieves a product by unique identifier.
+    /// </summary>
+    /// <param name="id">The product's unique identifier.</param>
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<ProductDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetById(Guid id)
@@ -68,6 +90,12 @@ public class ProductsController : ControllerBase
         return Ok(ApiResponse<ProductDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Lists all active products with pagination and optional warehouse filter.
+    /// </summary>
+    /// <param name="pageNumber">Page number (default: 1).</param>
+    /// <param name="pageSize">Items per page (default: 10).</param>
+    /// <param name="warehouseId">Optional warehouse filter.</param>
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<PaginatedList<ProductDto>>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] Guid? warehouseId = null)

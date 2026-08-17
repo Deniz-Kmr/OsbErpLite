@@ -9,6 +9,9 @@ using OsbErpLite.Application.StockMovements.Queries;
 
 namespace OsbErpLite.Api.Controllers;
 
+/// <summary>
+/// Stock movement tracking (manual entries and order-triggered movements).
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
@@ -23,6 +26,11 @@ public class StockMovementsController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Creates a manual stock movement (In or Out).
+    /// </summary>
+    /// <param name="command">Product, movement type, quantity, and warehouse.</param>
+    /// <returns>The created stock movement record.</returns>
     [HttpPost]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<StockMovementDto>), StatusCodes.Status201Created)]
@@ -35,6 +43,12 @@ public class StockMovementsController : ControllerBase
         return CreatedAtAction(nameof(GetByProductId), new { productId = result.ProductId }, ApiResponse<StockMovementDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Lists stock movements for a specific product with pagination.
+    /// </summary>
+    /// <param name="productId">The product's unique identifier.</param>
+    /// <param name="pageNumber">Page number (default: 1).</param>
+    /// <param name="pageSize">Items per page (default: 10).</param>
     [HttpGet("product/{productId:guid}")]
     [ProducesResponseType(typeof(ApiResponse<PaginatedList<StockMovementDto>>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetByProductId(Guid productId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)

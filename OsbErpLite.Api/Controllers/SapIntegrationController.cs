@@ -9,6 +9,9 @@ using OsbErpLite.Application.BusinessPartners.Dtos;
 
 namespace OsbErpLite.Api.Controllers;
 
+/// <summary>
+/// SAP S/4HANA Cloud integration endpoints for data synchronization.
+/// </summary>
 [ApiController]
 [Route("api/sap")]
 [Authorize]
@@ -23,6 +26,11 @@ public class SapIntegrationController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Triggers a full synchronization of business partners from SAP S/4HANA Cloud.
+    /// Performs upsert (insert or update) for each partner returned by the SAP OData API.
+    /// </summary>
+    /// <returns>Sync result with added, updated, and error counts.</returns>
     [HttpPost("sync-business-partners")]
     [Authorize(Roles = "Admin")]
     [EnableRateLimiting(RateLimitingServiceExtensions.SapSyncPolicyName)]

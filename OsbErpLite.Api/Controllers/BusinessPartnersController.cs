@@ -9,6 +9,9 @@ using OsbErpLite.Application.Common.Models;
 
 namespace OsbErpLite.Api.Controllers;
 
+/// <summary>
+/// Manages business partners (customers, suppliers, and dual-role partners).
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
@@ -21,6 +24,11 @@ public class BusinessPartnersController : ControllerBase
         _mediator = mediator;
     }
 
+    /// <summary>
+    /// Creates a new business partner.
+    /// </summary>
+    /// <param name="command">Business partner details including name, tax number, and type.</param>
+    /// <returns>The newly created business partner.</returns>
     [HttpPost]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<BusinessPartnerDto>), StatusCodes.Status201Created)]
@@ -30,6 +38,12 @@ public class BusinessPartnersController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, ApiResponse<BusinessPartnerDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Updates an existing business partner.
+    /// </summary>
+    /// <param name="id">The business partner's unique identifier.</param>
+    /// <param name="dto">Updated fields.</param>
+    /// <returns>The updated business partner.</returns>
     [HttpPut("{id:guid}")]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(typeof(ApiResponse<BusinessPartnerDto>), StatusCodes.Status200OK)]
@@ -40,6 +54,10 @@ public class BusinessPartnersController : ControllerBase
         return Ok(ApiResponse<BusinessPartnerDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Soft-deletes a business partner. Blocked if linked to active orders.
+    /// </summary>
+    /// <param name="id">The business partner's unique identifier.</param>
     [HttpDelete("{id:guid}")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
@@ -49,6 +67,10 @@ public class BusinessPartnersController : ControllerBase
         return Ok(ApiResponse<object>.Ok(null!));
     }
 
+    /// <summary>
+    /// Retrieves a business partner by unique identifier.
+    /// </summary>
+    /// <param name="id">The business partner's unique identifier.</param>
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<BusinessPartnerDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetById(Guid id)
@@ -60,6 +82,11 @@ public class BusinessPartnersController : ControllerBase
         return Ok(ApiResponse<BusinessPartnerDto>.Ok(result));
     }
 
+    /// <summary>
+    /// Lists all active business partners with pagination.
+    /// </summary>
+    /// <param name="pageNumber">Page number (default: 1).</param>
+    /// <param name="pageSize">Items per page (default: 10).</param>
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<PaginatedList<BusinessPartnerDto>>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
