@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using OsbErpLite.Application;
 using OsbErpLite.Infrastructure;
+using OsbErpLite.Api.Extensions;
 using OsbErpLite.Api.Middleware;
 using OsbErpLite.Api.Services;
 using OsbErpLite.Application.Common.Interfaces;
@@ -45,6 +46,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 builder.Services.AddAuthorization();
+builder.Services.AddApiRateLimiting(builder.Configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -63,6 +65,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseApiRateLimiting(app.Configuration);
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OsbErpLite.Api.Common;
 using OsbErpLite.Application.Common.Models;
+using Microsoft.AspNetCore.RateLimiting;
+using OsbErpLite.Api.Extensions;
 using OsbErpLite.Application.Identity.Commands;
 using OsbErpLite.Application.Identity.Dtos;
 using OsbErpLite.Application.Identity.Queries;
@@ -22,6 +24,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
+    [EnableRateLimiting(RateLimitingServiceExtensions.AuthPolicyName)]
     [ProducesResponseType(typeof(ApiResponse<AuthResponseDto>), StatusCodes.Status201Created)]
     public async Task<IActionResult> Register([FromBody] RegisterUserCommand command)
     {
@@ -30,6 +33,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [EnableRateLimiting(RateLimitingServiceExtensions.AuthPolicyName)]
     [ProducesResponseType(typeof(ApiResponse<AuthResponseDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Login([FromBody] LoginCommand command)
     {
@@ -38,6 +42,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("refresh-token")]
+    [EnableRateLimiting(RateLimitingServiceExtensions.AuthPolicyName)]
     [ProducesResponseType(typeof(ApiResponse<AuthResponseDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenCommand command)
     {
@@ -98,6 +103,7 @@ public class AuthController : ControllerBase
 
     [HttpPut("users/{id:guid}/reset-password")]
     [Authorize(Roles = "Admin")]
+    [EnableRateLimiting(RateLimitingServiceExtensions.PasswordChangePolicyName)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ResetPassword(Guid id, [FromBody] ResetPasswordDto dto)
     {
@@ -108,6 +114,7 @@ public class AuthController : ControllerBase
 
     [HttpPut("me/change-password")]
     [Authorize]
+    [EnableRateLimiting(RateLimitingServiceExtensions.PasswordChangePolicyName)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ChangeOwnPassword([FromBody] ChangePasswordDto dto)
     {
