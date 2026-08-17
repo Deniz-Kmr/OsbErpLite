@@ -205,6 +205,26 @@ OsbErpLite/
 
 ---
 
+## 💡 Neden Clean Architecture + CQRS?
+
+Bu projeyi geliştirirken bilinçli olarak Clean Architecture ve CQRS pattern'lerini tercih ettim. Nedenleri şunlar:
+
+**Clean Architecture** ile katmanlar arasında net bir bağımlılık yönü oluşturdum. Domain katmanı hiçbir dış kütüphaneye bağımlı değil — bu sayede iş kuralları framework'ten bağımsız yaşıyor. Yarın EF Core yerine Dapper kullansam, ya da PostgreSQL yerine başka bir veritabanına geçsem, Domain ve Application katmanlarına dokunmam gerekmiyor.
+
+**CQRS (MediatR)** ile her iş parçasını kendi Command/Query handler'ına izole ettim. Bu yaklaşımın somut faydaları:
+- Her handler tek bir iş yapıyor (Single Responsibility)
+- Controller'lar sadece request'i MediatR'a yönlendiriyor, business logic içermiyor
+- FluentValidation'ı MediatR pipeline behavior olarak ekleyebildim — validation logic handler'dan ayrı yaşıyor
+- Yeni bir özellik eklemek = yeni bir handler eklemek, mevcut koda dokunmadan (Open/Closed)
+
+**Alternatif olarak neden N-Tier veya basit Service pattern kullanmadım?**
+
+N-Tier yapıda service sınıfları zamanla şişiyor — `BusinessPartnerService` içinde 15+ method, hepsi aynı yerde. CQRS ile `CreateBusinessPartnerHandler`, `GetAllBusinessPartnersHandler` gibi küçük, odaklanmış sınıflar var. Test yazmak çok daha kolay çünkü her handler'ın bağımlılıkları minimal ve net.
+
+Bu mimari, özellikle modül sayısı arttıkça (şu an 5 modül) ve her modülde onay akışları gibi karmaşık iş kuralları olduğunda kendini gösteriyor. Sipariş onay akışı (Draft → Approved → Completed) ve izin talebi akışı gibi state machine'ler her biri kendi handler'ında temiz bir şekilde yaşıyor.
+
+---
+
 <a id="tr-güvenlik"></a>
 
 ## 🔐 Güvenlik
@@ -732,6 +752,26 @@ OsbErpLite/
     ├── OsbErpLite.Domain.Tests/
     └── OsbErpLite.Application.Tests/
 ```
+
+---
+
+## 💡 Why Clean Architecture + CQRS?
+
+I deliberately chose Clean Architecture and CQRS patterns for this project. Here's why:
+
+**Clean Architecture** establishes a clear dependency direction between layers. The Domain layer has zero dependencies on any external library — business rules live independently of the framework. If I were to swap EF Core for Dapper tomorrow, or migrate to a different database, the Domain and Application layers would remain untouched.
+
+**CQRS (MediatR)** isolates each piece of work into its own Command/Query handler. The concrete benefits:
+- Each handler does exactly one thing (Single Responsibility)
+- Controllers only route requests to MediatR — no business logic leaks in
+- FluentValidation plugs into the MediatR pipeline as a behavior — validation logic lives separately from handlers
+- Adding a new feature means adding a new handler without modifying existing code (Open/Closed)
+
+**Why not N-Tier or a simple Service pattern?**
+
+In N-Tier, service classes tend to bloat over time — a `BusinessPartnerService` with 15+ methods, all in one place. With CQRS, there are small, focused classes like `CreateBusinessPartnerHandler` and `GetAllBusinessPartnersHandler`. Testing becomes much easier because each handler's dependencies are minimal and explicit.
+
+This architecture particularly shines as the module count grows (currently 5 modules) and each module contains complex business rules like approval workflows. State machines such as the order approval flow (Draft → Approved → Completed) and the leave request flow each live cleanly in their own handler.
 
 ---
 
