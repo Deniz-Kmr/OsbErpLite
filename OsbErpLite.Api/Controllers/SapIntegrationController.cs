@@ -1,9 +1,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using OsbErpLite.Api.Common;
+using OsbErpLite.Api.Extensions;
 using OsbErpLite.Application.BusinessPartners.Commands;
 using OsbErpLite.Application.BusinessPartners.Dtos;
-using OsbErpLite.Api.Common;
 
 namespace OsbErpLite.Api.Controllers;
 
@@ -23,6 +25,7 @@ public class SapIntegrationController : ControllerBase
 
     [HttpPost("sync-business-partners")]
     [Authorize(Roles = "Admin")]
+    [EnableRateLimiting(RateLimitingServiceExtensions.SapSyncPolicyName)]
     [ProducesResponseType(typeof(ApiResponse<SyncResultDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> SyncBusinessPartners()
     {
