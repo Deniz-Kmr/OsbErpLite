@@ -91,6 +91,14 @@ Proje; **.NET 8**, **ASP.NET Core Web API**, **Entity Framework Core** ve **Post
 - İzin talebi onay akışı: Pending → Approved / Rejected
 - Soft delete cascade kontrol (bağlı çalışan/izin varsa engelleme)
 
+### Dashboard (İstatistikler)
+
+- Genel özet: aktif çalışan, iş ortağı, bekleyen sipariş/izin sayıları
+- Düşük stoklu ürün sayısı (konfigüre edilebilir eşik)
+- Toplam stok değeri (sadece Admin/Manager)
+- Aylık stok hareket istatistikleri (son 6 ay, grafik için hazır)
+- Departman bazlı çalışan dağılımı (pasta grafik için hazır)
+
 ### Authentication & Authorization
 
 - JWT Bearer authentication (access token 15dk + refresh token 7gün)
@@ -359,6 +367,14 @@ PUT  /api/leaverequests/{id}/approve
 PUT  /api/leaverequests/{id}/reject
 ```
 
+### Dashboard
+
+```
+GET /api/dashboard/summary                  [Authorize]
+GET /api/dashboard/stock-movements          [Authorize(Roles = "Admin,Manager")]
+GET /api/dashboard/department-distribution  [Authorize]
+```
+
 ### SAP Integration
 
 ```
@@ -548,10 +564,11 @@ Tamamlanan başlıklar:
 - Rate limiting
 - CORS konfigürasyonu
 - Health check endpoint
+- Dashboard istatistik endpoint'leri (özet, stok hareket, departman dağılımı)
 - Serilog ile dosya loglama
 - Docker Compose (PostgreSQL + API)
 - Swagger/OpenAPI dokümantasyonu (XML comments, JWT auth)
-- Unit ve integration testler (118 test)
+- Unit ve integration testler (130 test)
 - CreatedBy/UpdatedBy audit alanları
 
 ---
@@ -640,6 +657,14 @@ The project is built with **.NET 8**, **ASP.NET Core Web API**, **Entity Framewo
 - Employee management (Turkish National ID algorithm validation)
 - Leave request approval workflow: Pending → Approved / Rejected
 - Soft delete cascade validation (blocks if linked employees/requests exist)
+
+### Dashboard (Statistics)
+
+- Summary: active employees, business partners, pending orders/leave requests
+- Low stock product count (configurable threshold)
+- Total stock value (Admin/Manager only)
+- Monthly stock movement statistics (last 6 months, chart-ready)
+- Department employee distribution (pie chart-ready)
 
 ### Authentication & Authorization
 
@@ -909,6 +934,14 @@ PUT  /api/leaverequests/{id}/approve
 PUT  /api/leaverequests/{id}/reject
 ```
 
+### Dashboard
+
+```
+GET /api/dashboard/summary                  [Authorize]
+GET /api/dashboard/stock-movements          [Authorize(Roles = "Admin,Manager")]
+GET /api/dashboard/department-distribution  [Authorize]
+```
+
 ### SAP Integration
 
 ```
@@ -1098,8 +1131,9 @@ Completed milestones:
 - Rate limiting
 - CORS configuration
 - Health check endpoint
+- Dashboard statistics endpoints (summary, stock movements, department distribution)
 - Serilog file logging
 - Docker Compose (PostgreSQL + API)
 - Swagger/OpenAPI documentation (XML comments, JWT auth)
-- Unit and integration tests (118 tests)
+- Unit and integration tests (130 tests)
 - CreatedBy/UpdatedBy audit fields
