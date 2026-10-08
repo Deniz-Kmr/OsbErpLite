@@ -1,4 +1,5 @@
 using MediatR;
+using OsbErpLite.Domain.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OsbErpLite.Api.Common;
@@ -35,7 +36,7 @@ public class PurchaseOrdersController : ControllerBase
     /// <param name="dto">Supplier, order date, and order lines with product/quantity/price.</param>
     /// <returns>The newly created purchase order.</returns>
     [HttpPost]
-    [Authorize(Roles = "Admin,Manager,Employee")]
+    [Authorize(Roles = Roles.All)]
     [ProducesResponseType(typeof(ApiResponse<PurchaseOrderDto>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -88,7 +89,7 @@ public class PurchaseOrdersController : ControllerBase
     /// </summary>
     /// <param name="id">The purchase order's unique identifier.</param>
     [HttpPut("{id:guid}/approve")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = Roles.AdminOrManager)]
     [ProducesResponseType(typeof(ApiResponse<PurchaseOrderDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -111,7 +112,7 @@ public class PurchaseOrdersController : ControllerBase
     /// </summary>
     /// <param name="id">The purchase order's unique identifier.</param>
     [HttpPut("{id:guid}/reject")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = Roles.AdminOrManager)]
     [ProducesResponseType(typeof(ApiResponse<PurchaseOrderDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -134,7 +135,7 @@ public class PurchaseOrdersController : ControllerBase
     /// </summary>
     /// <param name="id">The purchase order's unique identifier.</param>
     [HttpPut("{id:guid}/complete")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = Roles.AdminOrManager)]
     [ProducesResponseType(typeof(ApiResponse<PurchaseOrderDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

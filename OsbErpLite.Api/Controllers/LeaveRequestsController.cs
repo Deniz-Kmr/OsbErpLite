@@ -1,4 +1,5 @@
 using MediatR;
+using OsbErpLite.Domain.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OsbErpLite.Api.Common;
@@ -81,7 +82,7 @@ public class LeaveRequestsController : ControllerBase
     /// </summary>
     /// <param name="id">The leave request's unique identifier.</param>
     [HttpPut("{id:guid}/approve")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = Roles.AdminOrManager)]
     [ProducesResponseType(typeof(ApiResponse<LeaveRequestDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Approve(Guid id)
     {
@@ -100,7 +101,7 @@ public class LeaveRequestsController : ControllerBase
     /// </summary>
     /// <param name="id">The leave request's unique identifier.</param>
     [HttpPut("{id:guid}/reject")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = Roles.AdminOrManager)]
     [ProducesResponseType(typeof(ApiResponse<LeaveRequestDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Reject(Guid id)
     {

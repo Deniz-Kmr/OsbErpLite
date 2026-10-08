@@ -1,4 +1,5 @@
 using MediatR;
+using OsbErpLite.Domain.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OsbErpLite.Api.Common;
@@ -45,7 +46,7 @@ public class DashboardController : ControllerBase
     /// Returns monthly stock movement totals (In/Out) for the last 6 months. Admin and Manager only.
     /// </summary>
     [HttpGet("stock-movements")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = Roles.AdminOrManager)]
     [ProducesResponseType(typeof(ApiResponse<List<MonthlyStockMovementDto>>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetStockMovements()
     {

@@ -1,4 +1,5 @@
 using MediatR;
+using OsbErpLite.Domain.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OsbErpLite.Api.Common;
@@ -32,7 +33,7 @@ public class PositionsController : ControllerBase
     /// <param name="dto">Position title and level.</param>
     /// <returns>The newly created position.</returns>
     [HttpPost]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = Roles.AdminOrManager)]
     [ProducesResponseType(typeof(ApiResponse<PositionDto>), StatusCodes.Status201Created)]
     public async Task<IActionResult> Create([FromBody] CreatePositionDto dto)
     {
@@ -50,7 +51,7 @@ public class PositionsController : ControllerBase
     /// <param name="dto">Updated title and/or level.</param>
     /// <returns>The updated position.</returns>
     [HttpPut("{id:guid}")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = Roles.AdminOrManager)]
     [ProducesResponseType(typeof(ApiResponse<PositionDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdatePositionDto dto)
     {
@@ -66,7 +67,7 @@ public class PositionsController : ControllerBase
     /// </summary>
     /// <param name="id">The position's unique identifier.</param>
     [HttpDelete("{id:guid}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = Roles.Admin)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Delete(Guid id)
     {

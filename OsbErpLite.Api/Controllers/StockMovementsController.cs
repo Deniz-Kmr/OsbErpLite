@@ -1,4 +1,5 @@
 using MediatR;
+using OsbErpLite.Domain.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OsbErpLite.Api.Common;
@@ -32,7 +33,7 @@ public class StockMovementsController : ControllerBase
     /// <param name="command">Product, movement type, quantity, and warehouse.</param>
     /// <returns>The created stock movement record.</returns>
     [HttpPost]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = Roles.AdminOrManager)]
     [ProducesResponseType(typeof(ApiResponse<StockMovementDto>), StatusCodes.Status201Created)]
     public async Task<IActionResult> Create([FromBody] CreateStockMovementCommand command)
     {

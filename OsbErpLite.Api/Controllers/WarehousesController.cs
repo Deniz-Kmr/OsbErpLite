@@ -1,4 +1,5 @@
 using MediatR;
+using OsbErpLite.Domain.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OsbErpLite.Api.Common;
@@ -32,7 +33,7 @@ public class WarehousesController : ControllerBase
     /// <param name="command">Warehouse name and location.</param>
     /// <returns>The newly created warehouse.</returns>
     [HttpPost]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = Roles.AdminOrManager)]
     [ProducesResponseType(typeof(ApiResponse<WarehouseDto>), StatusCodes.Status201Created)]
     public async Task<IActionResult> Create([FromBody] CreateWarehouseCommand command)
     {
@@ -49,7 +50,7 @@ public class WarehousesController : ControllerBase
     /// <param name="dto">Updated name and/or location.</param>
     /// <returns>The updated warehouse.</returns>
     [HttpPut("{id:guid}")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = Roles.AdminOrManager)]
     [ProducesResponseType(typeof(ApiResponse<WarehouseDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateWarehouseDto dto)
     {
@@ -65,7 +66,7 @@ public class WarehousesController : ControllerBase
     /// </summary>
     /// <param name="id">The warehouse's unique identifier.</param>
     [HttpDelete("{id:guid}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = Roles.Admin)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Delete(Guid id)
     {
