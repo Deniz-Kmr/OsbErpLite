@@ -3,6 +3,7 @@ using Moq;
 using OsbErpLite.Application.Common.Interfaces;
 using OsbErpLite.Application.Identity.Commands;
 using OsbErpLite.Application.Identity.Dtos;
+using OsbErpLite.Domain.Common;
 using OsbErpLite.Domain.Entities;
 using OsbErpLite.Domain.Enums;
 
@@ -80,12 +81,12 @@ public class LoginCommandHandlerTests
 
         var act = () => _handler.Handle(command, CancellationToken.None);
 
-        await act.Should().ThrowAsync<KeyNotFoundException>()
+        await act.Should().ThrowAsync<AuthenticationException>()
             .WithMessage("*Invalid username or password*");
     }
 
     [Fact]
-    public async Task Handle_NonExistentUser_ShouldThrowKeyNotFound()
+    public async Task Handle_NonExistentUser_ShouldThrowAuthenticationException()
     {
         _userRepoMock.Setup(r => r.GetByUsernameAsync("unknown", It.IsAny<CancellationToken>()))
             .ReturnsAsync((User?)null);
@@ -94,7 +95,7 @@ public class LoginCommandHandlerTests
 
         var act = () => _handler.Handle(command, CancellationToken.None);
 
-        await act.Should().ThrowAsync<KeyNotFoundException>();
+        await act.Should().ThrowAsync<AuthenticationException>();
     }
 
     [Fact]
