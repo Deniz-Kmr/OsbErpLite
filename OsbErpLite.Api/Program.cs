@@ -8,6 +8,7 @@ using OsbErpLite.Api.Extensions;
 using OsbErpLite.Api.Middleware;
 using OsbErpLite.Api.Services;
 using OsbErpLite.Application.Common.Interfaces;
+using OsbErpLite.Application.Dashboard.Dtos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,7 @@ var jwtSecretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY")
 // DI
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.Configure<DashboardSettings>(builder.Configuration.GetSection("Dashboard"));
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(connectionString, builder.Configuration, jwtSecretKey);
 builder.Services.AddAuthentication(options =>
