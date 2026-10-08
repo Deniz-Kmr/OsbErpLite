@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using OsbErpLite.Domain.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -87,7 +88,7 @@ public class AuthController : ControllerBase
     /// <param name="pageNumber">Page number (default: 1).</param>
     /// <param name="pageSize">Items per page (default: 10).</param>
     [HttpGet("users")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = Roles.Admin)]
     [ProducesResponseType(typeof(ApiResponse<PaginatedList<UserDto>>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllUsers([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
@@ -100,7 +101,7 @@ public class AuthController : ControllerBase
     /// </summary>
     /// <param name="id">The user's unique identifier.</param>
     [HttpGet("users/{id:guid}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = Roles.Admin)]
     [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetUserById(Guid id)
     {
@@ -117,7 +118,7 @@ public class AuthController : ControllerBase
     /// <param name="id">The user's unique identifier.</param>
     /// <param name="dto">Fields to update (role, isActive, employeeId).</param>
     [HttpPut("users/{id:guid}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = Roles.Admin)]
     [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserDto dto)
     {
@@ -132,7 +133,7 @@ public class AuthController : ControllerBase
     /// </summary>
     /// <param name="id">The user's unique identifier.</param>
     [HttpDelete("users/{id:guid}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = Roles.Admin)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public async Task<IActionResult> DeleteUser(Guid id)
     {
@@ -147,7 +148,7 @@ public class AuthController : ControllerBase
     /// <param name="id">The target user's unique identifier.</param>
     /// <param name="dto">The new password.</param>
     [HttpPut("users/{id:guid}/reset-password")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = Roles.Admin)]
     [EnableRateLimiting(RateLimitingServiceExtensions.PasswordChangePolicyName)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ResetPassword(Guid id, [FromBody] ResetPasswordDto dto)

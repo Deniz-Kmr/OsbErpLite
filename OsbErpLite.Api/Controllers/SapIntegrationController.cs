@@ -1,4 +1,5 @@
 using MediatR;
+using OsbErpLite.Domain.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -32,7 +33,7 @@ public class SapIntegrationController : ControllerBase
     /// </summary>
     /// <returns>Sync result with added, updated, and error counts.</returns>
     [HttpPost("sync-business-partners")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = Roles.Admin)]
     [EnableRateLimiting(RateLimitingServiceExtensions.SapSyncPolicyName)]
     [ProducesResponseType(typeof(ApiResponse<SyncResultDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> SyncBusinessPartners()

@@ -1,4 +1,5 @@
 using MediatR;
+using OsbErpLite.Domain.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OsbErpLite.Api.Common;
@@ -33,7 +34,7 @@ public class SalesOrdersController : ControllerBase
     /// <param name="dto">Customer, order date, and order lines with product/quantity/price.</param>
     /// <returns>The newly created sales order.</returns>
     [HttpPost]
-    [Authorize(Roles = "Admin,Manager,Employee")]
+    [Authorize(Roles = Roles.All)]
     [ProducesResponseType(typeof(ApiResponse<SalesOrderDto>), StatusCodes.Status201Created)]
     public async Task<IActionResult> Create([FromBody] CreateSalesOrderDto dto)
     {
@@ -80,7 +81,7 @@ public class SalesOrdersController : ControllerBase
     /// </summary>
     /// <param name="id">The sales order's unique identifier.</param>
     [HttpPut("{id:guid}/approve")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = Roles.AdminOrManager)]
     [ProducesResponseType(typeof(ApiResponse<SalesOrderDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Approve(Guid id)
     {
@@ -99,7 +100,7 @@ public class SalesOrdersController : ControllerBase
     /// </summary>
     /// <param name="id">The sales order's unique identifier.</param>
     [HttpPut("{id:guid}/reject")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = Roles.AdminOrManager)]
     [ProducesResponseType(typeof(ApiResponse<SalesOrderDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Reject(Guid id)
     {
@@ -118,7 +119,7 @@ public class SalesOrdersController : ControllerBase
     /// </summary>
     /// <param name="id">The sales order's unique identifier.</param>
     [HttpPut("{id:guid}/complete")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = Roles.AdminOrManager)]
     [ProducesResponseType(typeof(ApiResponse<SalesOrderDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Complete(Guid id)
     {

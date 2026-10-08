@@ -1,4 +1,5 @@
 using MediatR;
+using OsbErpLite.Domain.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OsbErpLite.Api.Common;
@@ -32,7 +33,7 @@ public class EmployeesController : ControllerBase
     /// <param name="dto">Employee details including name, national ID (TC Kimlik No), department, position, and salary.</param>
     /// <returns>The newly created employee.</returns>
     [HttpPost]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = Roles.AdminOrManager)]
     [ProducesResponseType(typeof(ApiResponse<EmployeeDto>), StatusCodes.Status201Created)]
     public async Task<IActionResult> Create([FromBody] CreateEmployeeDto dto)
     {
@@ -52,7 +53,7 @@ public class EmployeesController : ControllerBase
     /// <param name="dto">Updated fields including status transitions.</param>
     /// <returns>The updated employee.</returns>
     [HttpPut("{id:guid}")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = Roles.AdminOrManager)]
     [ProducesResponseType(typeof(ApiResponse<EmployeeDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateEmployeeDto dto)
     {
@@ -70,7 +71,7 @@ public class EmployeesController : ControllerBase
     /// </summary>
     /// <param name="id">The employee's unique identifier.</param>
     [HttpDelete("{id:guid}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = Roles.Admin)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Delete(Guid id)
     {
