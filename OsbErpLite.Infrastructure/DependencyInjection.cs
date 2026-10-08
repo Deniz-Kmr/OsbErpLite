@@ -38,6 +38,7 @@ public static class DependencyInjection
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<IDashboardRepository, DashboardRepository>();
 
         services.AddSingleton<IJwtTokenService>(
             new JwtTokenService(configuration, jwtSecretKey));
