@@ -1,6 +1,3 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using OsbErpLite.Application;
 using OsbErpLite.Infrastructure;
@@ -29,25 +26,7 @@ builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.Configure<DashboardSettings>(builder.Configuration.GetSection("Dashboard"));
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(connectionString, builder.Configuration, jwtSecretKey);
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey))
-    };
-});
-builder.Services.AddAuthorization();
+builder.Services.AddJwtAuthentication(builder.Configuration, jwtSecretKey);
 builder.Services.AddApiRateLimiting(builder.Configuration);
 builder.Services.AddApiCors(builder.Configuration);
 builder.Services.AddHealthCheckServices(connectionString);
