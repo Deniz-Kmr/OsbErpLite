@@ -89,4 +89,20 @@ public class DashboardRepository : IDashboardRepository
             .OrderBy(x => x.Year).ThenBy(x => x.Month)
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<List<DepartmentDistributionDto>> GetDepartmentEmployeeDistributionAsync(
+        CancellationToken cancellationToken = default)
+    {
+        return await _context.Employees
+            .AsNoTracking()
+            .Where(e => e.Status == EmployeeStatus.Active)
+            .GroupBy(e => e.Department.Name)
+            .Select(g => new DepartmentDistributionDto
+            {
+                DepartmentName = g.Key,
+                EmployeeCount = g.Count()
+            })
+            .OrderByDescending(x => x.EmployeeCount)
+            .ToListAsync(cancellationToken);
+    }
 }
