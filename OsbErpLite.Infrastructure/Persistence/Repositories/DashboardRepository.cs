@@ -93,14 +93,13 @@ public class DashboardRepository : IDashboardRepository
     public async Task<List<DepartmentDistributionDto>> GetDepartmentEmployeeDistributionAsync(
         CancellationToken cancellationToken = default)
     {
-        return await _context.Employees
+        return await _context.Departments
             .AsNoTracking()
-            .Where(e => e.Status == EmployeeStatus.Active)
-            .GroupBy(e => e.Department.Name)
-            .Select(g => new DepartmentDistributionDto
+            .Where(d => d.IsActive)
+            .Select(d => new DepartmentDistributionDto
             {
-                DepartmentName = g.Key,
-                EmployeeCount = g.Count()
+                DepartmentName = d.Name,
+                EmployeeCount = d.Employees.Count(e => e.Status == EmployeeStatus.Active)
             })
             .OrderByDescending(x => x.EmployeeCount)
             .ToListAsync(cancellationToken);
