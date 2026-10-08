@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using OsbErpLite.Application.Common.Interfaces;
+using OsbErpLite.Application.Dashboard.Dtos;
 using OsbErpLite.Domain.Enums;
 using OsbErpLite.Infrastructure.Persistence.Context;
 
@@ -69,5 +70,23 @@ public class DashboardRepository : IDashboardRepository
             .AsNoTracking()
             .Where(p => p.IsActive)
             .SumAsync(p => p.UnitPrice * p.StockQuantity, cancellationToken);
+    }
+
+    public async Task<List<MonthlyStockMovementDto>> GetMonthlyStockMovementsAsync(
+        DateTime startDate, CancellationToken cancellationToken = default)
+    {
+        return await _context.StockMovements
+            .AsNoTracking()
+            .Where(sm => sm.Date >= startDate)
+            .GroupBy(sm => new { sm.Date.Year, sm.Date.Month })
+            .Select(g => new MonthlyStockMovementDto
+            {
+                Year = g.Key.Year,
+                Month = g.Key.Month,
+                TotalIn = g.Where(x => x.MovementType == StockMovementType.In).Sum(x => x.Quantity),
+                TotalOut = g.Where(x => x.MovementType == StockMovementType.Out).Sum(x => x.Quantity)
+            })
+            .OrderBy(x => x.Year).ThenBy(x => x.Month)
+            .ToListAsync(cancellationToken);
     }
 }

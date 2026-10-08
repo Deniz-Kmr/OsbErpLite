@@ -1,3 +1,4 @@
+using OsbErpLite.Application.Dashboard.Dtos;
 using OsbErpLite.Domain.Enums;
 
 namespace OsbErpLite.Application.Common.Interfaces;
@@ -11,4 +12,5 @@ public interface IDashboardRepository
     Task<int> GetPendingLeaveRequestsCountAsync(CancellationToken cancellationToken = default);
     Task<int> GetLowStockProductsCountAsync(int threshold, CancellationToken cancellationToken = default);
     Task<decimal> GetTotalStockValueAsync(CancellationToken cancellationToken = default);
+    Task<List<MonthlyStockMovementDto>> GetMonthlyStockMovementsAsync(DateTime startDate, CancellationToken cancellationToken = default);
 }
