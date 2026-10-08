@@ -9,9 +9,7 @@ using OsbErpLite.Application.Dashboard.Dtos;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Serilog
-builder.Host.UseSerilog((context, configuration) =>
-    configuration.ReadFrom.Configuration(context.Configuration));
+builder.AddSerilogLogging();
 
 // Connection string
 var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING")
