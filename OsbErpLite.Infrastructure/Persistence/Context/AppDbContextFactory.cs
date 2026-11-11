@@ -9,7 +9,8 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     {
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
         var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING")
-            ?? "Host=localhost;Port=5433;Database=osberplite_design;";
+            ?? throw new InvalidOperationException(
+                "CONNECTION_STRING environment variable is not set. Set it before running migrations.");
         optionsBuilder.UseNpgsql(connectionString);
 
         return new AppDbContext(optionsBuilder.Options);
