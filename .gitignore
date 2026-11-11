@@ -10,6 +10,7 @@
 *.userosscache
 *.sln.docstates
 *.env
+.env
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -427,3 +428,13 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Sensitive config
+appsettings.Development.json
+
+# Claude Code
+CLAUDE.md
+.claude/
+
+# JetBrains Rider
+.idea/

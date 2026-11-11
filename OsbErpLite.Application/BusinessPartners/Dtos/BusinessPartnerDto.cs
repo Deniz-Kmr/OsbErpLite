@@ -1,0 +1,19 @@
+using OsbErpLite.Domain.Enums;
+
+namespace OsbErpLite.Application.BusinessPartners.Dtos;
+
+public class BusinessPartnerDto
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = default!;
+    public string? TaxNumber { get; set; }
+    public BusinessPartnerType Type { get; set; }
+    public string TypeName { get; set; } = default!;
+    public string? Email { get; set; }
+    public string? Phone { get; set; }
+    public string? Address { get; set; }
+    public string? City { get; set; }
+    public bool IsActive { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public DateTime? UpdatedDate { get; set; }
+}

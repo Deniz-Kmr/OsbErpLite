@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsbErpLite.Api", "OsbErpLite.Api\OsbErpLite.Api.csproj", "{A5379C11-F411-4404-9FD2-8833B3336A38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsbErpLite.Application", "OsbErpLite.Application\OsbErpLite.Application.csproj", "{9CB82815-DA6B-4980-A864-6E5F98FD7A5D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsbErpLite.Infrastructure", "OsbErpLite.Infrastructure\OsbErpLite.Infrastructure.csproj", "{E29A23CA-7302-4CEC-8951-05E12DF6FD9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsbErpLite.Domain", "OsbErpLite.Domain\OsbErpLite.Domain.csproj", "{1919E9D9-0236-4F30-877C-ED11DE356D22}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{9C090531-7A50-4CDD-A64E-32BAC8BBF437}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsbErpLite.Domain.Tests", "tests\OsbErpLite.Domain.Tests\OsbErpLite.Domain.Tests.csproj", "{549951E3-160A-4153-A088-036AD4D7CAD1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsbErpLite.Application.Tests", "tests\OsbErpLite.Application.Tests\OsbErpLite.Application.Tests.csproj", "{251DDBCE-47E3-4E1D-A38F-5EA2F962C20C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A5379C11-F411-4404-9FD2-8833B3336A38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5379C11-F411-4404-9FD2-8833B3336A38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5379C11-F411-4404-9FD2-8833B3336A38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5379C11-F411-4404-9FD2-8833B3336A38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CB82815-DA6B-4980-A864-6E5F98FD7A5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CB82815-DA6B-4980-A864-6E5F98FD7A5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CB82815-DA6B-4980-A864-6E5F98FD7A5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CB82815-DA6B-4980-A864-6E5F98FD7A5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E29A23CA-7302-4CEC-8951-05E12DF6FD9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E29A23CA-7302-4CEC-8951-05E12DF6FD9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E29A23CA-7302-4CEC-8951-05E12DF6FD9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E29A23CA-7302-4CEC-8951-05E12DF6FD9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1919E9D9-0236-4F30-877C-ED11DE356D22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1919E9D9-0236-4F30-877C-ED11DE356D22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1919E9D9-0236-4F30-877C-ED11DE356D22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1919E9D9-0236-4F30-877C-ED11DE356D22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{549951E3-160A-4153-A088-036AD4D7CAD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{549951E3-160A-4153-A088-036AD4D7CAD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{549951E3-160A-4153-A088-036AD4D7CAD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{549951E3-160A-4153-A088-036AD4D7CAD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{251DDBCE-47E3-4E1D-A38F-5EA2F962C20C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{251DDBCE-47E3-4E1D-A38F-5EA2F962C20C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{251DDBCE-47E3-4E1D-A38F-5EA2F962C20C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{251DDBCE-47E3-4E1D-A38F-5EA2F962C20C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{549951E3-160A-4153-A088-036AD4D7CAD1} = {9C090531-7A50-4CDD-A64E-32BAC8BBF437}
+		{251DDBCE-47E3-4E1D-A38F-5EA2F962C20C} = {9C090531-7A50-4CDD-A64E-32BAC8BBF437}
+	EndGlobalSection
+EndGlobal
